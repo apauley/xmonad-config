@@ -10,6 +10,8 @@ main = do
   xmproc <- spawnPipe "/usr/bin/xmobar ~/.config/xmobar/xmobarrc"
   xmonad $ defaultConfig
          { modMask            = mod4Mask
+         , manageHook         = manageDocks <+> manageHook defaultConfig
+         , layoutHook         = avoidStruts  $  layoutHook defaultConfig
          , startupHook        = setWMName "LG3D"
          , terminal           = "urxvt"
          , borderWidth        = 2
