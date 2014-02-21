@@ -7,7 +7,7 @@ import XMonad.Util.EZConfig(additionalKeys)
 import System.IO
 
 main = do
-  xmproc <- spawnPipe "/usr/bin/xmobar ~/.config/xmobar/xmobarrc"
+  xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmonad/xmobarrc"
   xmonad $ defaultConfig
          { modMask            = mod4Mask
          , manageHook         = manageDocks <+> manageHook defaultConfig
