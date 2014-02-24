@@ -1,4 +1,6 @@
 import XMonad
+import qualified XMonad.StackSet as W
+import XMonad.Layout.IndependentScreens
 import XMonad.Hooks.SetWMName
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
@@ -6,10 +8,18 @@ import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.EZConfig(additionalKeys)
 import System.IO
 
-main = do
-  xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmonad/xmobarrc"
-  xmonad $ defaultConfig
+myWorkspaces = withScreens 2 ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+myKeys =
+         [
+         -- workspaces are distinct by screen
+          ((m .|. mod4Mask, k), windows $ onCurrentScreen f i)
+               | (i, k) <- zip (workspaces' conf) [xK_1 .. xK_9]
+               , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
+         ]
+
+conf = defaultConfig
          { modMask            = mod4Mask
+         , workspaces         = myWorkspaces
          , manageHook         = manageDocks <+> manageHook defaultConfig
          , layoutHook         = avoidStruts  $  layoutHook defaultConfig
          , startupHook        = setWMName "LG3D"
@@ -17,4 +27,8 @@ main = do
          , borderWidth        = 2
          , normalBorderColor  = "#cccccc"
          , focusedBorderColor = "#cd8b00"
-         }
+         } `additionalKeys` myKeys
+
+main = do
+  xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmonad/xmobarrc"
+  xmonad conf
