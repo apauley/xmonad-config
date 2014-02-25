@@ -19,10 +19,15 @@ myKeys xmproc = [ ((mod4Mask .|. shiftMask, xK_z), spawn "xscreensaver-command -
                , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
          ]
 
+myManageHook = composeAll
+    [ className =? "Gimp"      --> doFloat
+    , className =? "Vncviewer" --> doFloat
+    ]
+
 conf xmproc = defaultConfig
          { modMask            = mod4Mask
          , workspaces         = myWorkspaces
-         , manageHook         = manageDocks <+> manageHook defaultConfig
+         , manageHook         = manageDocks <+> myManageHook <+> manageHook defaultConfig
          , layoutHook         = avoidStruts  $  layoutHook defaultConfig
          , logHook            = dynamicLogWithPP xmobarPP
                                     { ppOutput = hPutStrLn xmproc
