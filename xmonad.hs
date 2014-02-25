@@ -9,28 +9,33 @@ import XMonad.Util.EZConfig(additionalKeys)
 import System.IO
 
 myWorkspaces = withScreens 2 ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
-myKeys = [ ((mod4Mask .|. shiftMask, xK_z), spawn "xscreensaver-command -lock")
+myKeys xmproc = [ ((mod4Mask .|. shiftMask, xK_z), spawn "xscreensaver-command -lock")
          , ((0, xK_F5), spawn "sleep 0.2; scrot -s")
          , ((0, xK_F6), spawn "scrot")] ++
          [
          -- workspaces are distinct by screen
           ((m .|. mod4Mask, k), windows $ onCurrentScreen f i)
-               | (i, k) <- zip (workspaces' conf) [xK_1 .. xK_9]
+               | (i, k) <- zip (workspaces' (conf xmproc)) [xK_1 .. xK_9]
                , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]
          ]
 
-conf = defaultConfig
+conf xmproc = defaultConfig
          { modMask            = mod4Mask
          , workspaces         = myWorkspaces
          , manageHook         = manageDocks <+> manageHook defaultConfig
          , layoutHook         = avoidStruts  $  layoutHook defaultConfig
+         , logHook            = dynamicLogWithPP xmobarPP
+                                    { ppOutput = hPutStrLn xmproc
+                                    , ppTitle  = xmobarColor "green" "" . shorten 50
+                                    }
          , startupHook        = setWMName "LG3D"
          -- , terminal           = "urxvt"
          , borderWidth        = 2
          , normalBorderColor  = "#cccccc"
          , focusedBorderColor = "#cd8b00"
-         } `additionalKeys` myKeys
+         } `additionalKeys` (myKeys xmproc)
+
 
 main = do
   xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmonad/xmobarrc"
-  xmonad conf
+  xmonad $ conf xmproc
