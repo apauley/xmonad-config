@@ -10,8 +10,8 @@ import System.IO
 
 myWorkspaces = withScreens 2 ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 myKeys xmproc = [ ((mod4Mask .|. shiftMask, xK_z), spawn "xscreensaver-command -lock")
-         , ((0, xK_F5), spawn "sleep 0.2; scrot -s")
-         , ((0, xK_F6), spawn "scrot")] ++
+         , ((0, xK_F3), spawn "sleep 0.2; scrot -s")
+         , ((0, xK_F4), spawn "scrot")] ++
          [
          -- workspaces are distinct by screen
           ((m .|. mod4Mask, k), windows $ onCurrentScreen f i)
