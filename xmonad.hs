@@ -36,6 +36,7 @@ conf xmproc = defaultConfig
          , startupHook        = setWMName "LG3D"
          -- , terminal           = "urxvt"
          , borderWidth        = 2
+         , focusFollowsMouse  = False
          , normalBorderColor  = "#cccccc"
          , focusedBorderColor = "#cd8b00"
          } `additionalKeys` (myKeys xmproc)
